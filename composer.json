@@ -18,7 +18,7 @@
     },
     "autoload": {
         "psr-4": {
-            "markhuot\\PestPluginCraftCms\\": "src/"
+            "Pest\\CraftCms\\": "src/"
         },
         "files": [
             "src/Autoload.php"

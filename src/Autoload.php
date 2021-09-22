@@ -8,18 +8,9 @@ use Pest\Plugin;
 
 Plugin::uses(TestCase::class, Http::class);
 
-function setUpRequest($uri) {
-    test()->setUri($uri);
-}
 
-function get($uri=null) {
+function get($uri = null): TestableResponse
+{
     return test()->get($uri);
 }
 
-function setUri($uri) {
-    return test()->setUri($uri);
-}
-
-function querySelector($selector) {
-    return test()->get()->querySelector($selector);
-}

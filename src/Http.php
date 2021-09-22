@@ -39,7 +39,7 @@ trait Http
 
         $resolvedUri = ltrim($uri ?? $this->uri ?? '/', '/');
 
-        $this->craft->request->setRaw([
+        (new PropertySetter($this->craft->request))->setRaw([
             '_isConsoleRequest' => false,
             '_fullPath' => $resolvedUri,
             '_path' => $resolvedUri,

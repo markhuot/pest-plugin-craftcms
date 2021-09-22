@@ -29,6 +29,9 @@ class TestCase extends \PHPUnit\Framework\TestCase {
         define('CRAFT_BASE_PATH', getcwd());
         define('CRAFT_VENDOR_PATH', CRAFT_BASE_PATH . '/vendor');
 
+        // Prevent Craft from expecting a storage folder
+        define('CRAFT_EPHEMERAL', true);
+
         // Load Composer's autoloader
         // require_once CRAFT_VENDOR_PATH . '/autoload.php';
 
@@ -47,10 +50,8 @@ class TestCase extends \PHPUnit\Framework\TestCase {
         self::$craftConfig = $config;
 
         self::$craftConfig['components']['request'] = function() {
-            $config = \craft\helpers\App::webRequestConfig();
-            $config['class'] = 'markhuot\\craftpest\\web\\Request';
             /** @var \craft\web\Request $request */
-            $request = \Craft::createObject($config);
+            $request = \Craft::createObject(\craft\helpers\App::webRequestConfig());
             $request->csrfCookie = \Craft::cookieConfig([], $request);
             return $request;
         };

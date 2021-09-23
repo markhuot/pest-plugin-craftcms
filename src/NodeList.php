@@ -2,8 +2,6 @@
 
 namespace Pest\CraftCms;
 
-use function Webmozart\Assert\Tests\StaticAnalysis\methodExists;
-
 class NodeList implements \Countable {
     /** @var \Symfony\Component\DomCrawler\Crawler */
     public $crawler;

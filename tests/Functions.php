@@ -2,4 +2,4 @@
 
 use function Pest\PluginName\example;
 
-example('foo');
+//example('foo');

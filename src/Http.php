@@ -7,6 +7,7 @@ namespace Pest\CraftCms;
 use craft\web\Application;
 use craft\web\Response;
 use markhuot\craftpest\web\Request;
+use PHPUnit\Util\Test;
 use yii\base\Event;
 
 /**
@@ -21,16 +22,11 @@ trait Http
     /** @var Response */
     public $response;
 
-    function setUri($uri) {
-        $this->uri = $uri;
-
-        return $this;
-    }
 
     /**
      * Example description.
      */
-    public function get(string $uri=null): \yii\web\Response
+    public function get(string $uri=null): TestableResponse
     {
         // Configure the request
         // $this->craft->request->headers->add('host', 'localhost:8080');
@@ -43,7 +39,7 @@ trait Http
 
         $resolvedUri = ltrim($uri ?? $this->uri ?? '/', '/');
 
-        $this->craft->request->setRaw([
+        (new PropertySetter($this->craft->request))->setRaw([
             '_isConsoleRequest' => false,
             '_fullPath' => $resolvedUri,
             '_path' => $resolvedUri,
@@ -64,7 +60,7 @@ trait Http
         // dd($this->craft->request);
 
         // Override the response
-        $this->craft->response->attachBehavior('testableResponse', new TestableResponseBehavior);
+        //$this->craft->response->attachBehavior('testableResponse', new TestableResponseBehavior);
 
         // Set the response stream so nothing gets written to the terminal
         // We have to do this because the `ErrorHandler::handleException` makes a call to
@@ -95,6 +91,6 @@ trait Http
         $this->craft->trigger(Application::EVENT_AFTER_REQUEST);
 
         // Return the response
-        return $this->response = $response;
+        return new TestableResponse($response);
     }
 }

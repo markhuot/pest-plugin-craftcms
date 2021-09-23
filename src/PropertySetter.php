@@ -11,25 +11,32 @@ class PropertySetter
         $this->object = $object;
     }
 
-    public function setRaw(array $props) {
-        $findProperty = function (\ReflectionClass $ref, string $property) {
-            while ($ref && !$ref->hasProperty($property)) {
-                $ref = $ref->getParentClass();
-            }
-
-            return $ref->getProperty($property);
-        };
-
+    public function setRaw(array $props)
+    {
         foreach ($props as $key => $value) {
             $ref = new \ReflectionClass($this->object);
-            $propertyRef = $findProperty($ref, $key);
-            if ($propertyRef->isPrivate()) {
-                $propertyRef->setAccessible(true);
+            $property = $this->findReflectionPropertyDeep($ref, $key);
+
+            if ($property->isPrivate() || $property->isProtected()) {
+                $property->setAccessible(true);
             }
-            $propertyRef->setValue($this->object, $value);
-            if ($propertyRef->isPrivate()) {
-                $propertyRef->setAccessible(false);
-            }
+
+            $property->setValue($this->object, $value);
         }
     }
+
+    private function findReflectionPropertyDeep(\ReflectionClass $ref, string $property) : \ReflectionProperty
+    {
+        while ($ref && !$ref->hasProperty($property)) {
+            $ref = $ref->getParentClass();
+        }
+        if ($ref === false) {
+            throw new \InvalidArgumentException("Unable to find property '{$property}'.");
+        }
+
+        return $ref->getProperty($property);
+    }
+
+
+
 }
